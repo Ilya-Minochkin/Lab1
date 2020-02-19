@@ -17,7 +17,6 @@ void obmen1(int a, int b) {
 	int *v1;
 	v1 = &a;
 	*v1 = 1;
-	
 }
 
 void obmen2(int *a, int *b) {
@@ -62,6 +61,7 @@ void buildTriangleMatrix(float f[N][N])
 		cout << endl;
 	}
 }
+
 void findMinOrMax(float m[N][N], string stance)
 {
 	float v = m[0][0];
@@ -104,7 +104,54 @@ void findMinOrMaxTriangle(float m[N][N], string stance)
 	}
 
 	cout << stance << ":" << v << endl;
-	cout << m[1][6];
+	cout << endl;
+}
+
+void findMinOrMaxDiag(float m[N][N], string stance, string diag)
+{
+
+	if (diag == "main")
+	{
+		float v = m[0][0];
+		for (int i = 0; i < N; i++)
+		{
+			if (stance == "min")
+			{
+				if (m[i][i] < v) v = m[i][i];
+			}
+			else if (stance == "max")
+			{
+				if (m[i][i] > v) v = m[i][i];
+			}
+
+		}
+
+		cout << stance << ":" << v << endl;
+		cout << endl;
+	}
+	else if (diag == "sub")
+	{
+		float v = m[0][4];
+		for (int i = 0; i < N; i++)
+		{
+			//for (int j = N - 1; j >= 0; j--)
+			//{
+				if (stance == "min")
+				{
+					if (m[i][N - i - 1] < v) v = m[i][N - i - 1];
+				}
+				else if (stance == "max")
+				{
+					if (m[i][N - i - 1] > v) v = m[i][N - i - 1];
+				}
+			//}
+
+
+		}
+		cout << stance << ":" << v << endl;
+		cout << endl;
+	}
+
 }
 int main()
 {
@@ -136,7 +183,7 @@ for (i = 0; i < N; i++)
 	cout << endl;
 }
 findMinOrMax(m, "min");
-buildTriangleMatrix(m);
+//buildTriangleMatrix(m);
 for (i = 0; i < N; i++)
 {
 	for (j = 0; j < N; j++)
@@ -146,6 +193,21 @@ for (i = 0; i < N; i++)
 	cout << endl;
 }
 findMinOrMaxTriangle(v, "max");
+
+
+for (i = N-1; i >= 0; i--)
+{
+	for (j = N-1; j >= 0; j--)
+	{
+		cout << setw(8) << setprecision(5) << m[i][j];
+	}
+	cout << endl;
+}
+
+
+findMinOrMaxDiag(m, "min", "sub");
+
+
 
 //getch();
 }
