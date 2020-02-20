@@ -207,7 +207,7 @@ for (i = N-1; i >= 0; i--)
 
 findMinOrMaxDiag(m, "min", "sub");
 
-cout << "TestCommit";
+cout << "TestC2it";
 
 
 
