@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "pch.h"
 #include <iostream>
 #include <iomanip>
@@ -9,6 +10,7 @@
 #define MIN "min"
 #define MAX "max"
 #define MAXSTACK 2048
+
 using namespace std;
 
 float v[N][N];
@@ -673,7 +675,7 @@ void sortEvenUneven(int arr[], int arraySize)
 
 
 
-int main()
+int mainLab3()
 {
 	int arr[] = { 2, 5, -8, 1, -4, 6, 3, -5, -9, 13, 0, 4, 9 };
 	int iMin, iMax;
@@ -702,10 +704,78 @@ int main()
 
 //	sortEvenUneven(arr, n);
 //	quickSort(arr, n, 0, 7);
-	quickSortDESC(arr, n, 3, 7);
-	showArray(arr, n);
+	//quickSortDESC(arr, n, 3, 7);
+	//showArray(arr, n);
+	return 1;
+}
 
 
+int dlina1(char *c)
+{	
+	int count = 0;
+	for (int i = 0; i < INFINITY; i++)
+	{
+		if (c[i] == '\0')
+			break;
+		count++;
+	}
+	return count;
+}
+
+int dlina2(char *c)
+{
+	int s = 0;
+	while (*c++) s++;
+	return s;
+}
+
+int dlina3(char *c)
+{
+	char *e = c;
+	while (*e++);
+	return e-c-1;
+}
+
+void kopir(char *dst, char *scr)
+{
+	for (int i = 0; i < dlina1(dst); i++)
+		dst[i] = scr[i];
+}
+
+int compare(char *c1, char *c2)
+{
+	if (dlina1(c1) == dlina1(c2)) return 0;
+	else if (dlina1(c1) > dlina1(c2)) return 1;
+	else return -1;
+}
+
+void concat(char *c1, char *c2)
+{
+	for (int i = dlina1(c1); i < dlina1(c1) + dlina1(c2); i++)
+		c1[i] = c2[i];
+}
+
+int main()
+{
+	#pragma warning(disable: 4996)
+	char str1[] = "qwerty", str2[] = "1234567890";
+	cout << "strlen of str1 = " << strlen(str1) << endl;
+//	cout << "concat of str1 and str2 = " << strcat_s(str2, 100, str1) << endl;
+	try {
+		cout << dlina3(str1) << endl;
+		cout << str2 << endl;
+//		kopir(str2, str1);
+//		concat(str2, str1);
+		cout << str2 << endl;
+	//	cout << "sizeof str1 = " << sizeof(str1) << endl;
+		//cout << "returned sizeof str1 = " << dlina2(str1) << endl;
+		//cout << "strcopy of str1 and str2 = " << strcpy(str2, str1) << endl;
+//	  	cout << "strcompare of str1 and str2 = " << strcmp(str1, str2) << endl;
+		cout << "strcompare of str1 and str2 = " << compare(str1, str2) << endl;
+	}
+	catch(exception) {
+		cout << "123";
+	}
 }
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
