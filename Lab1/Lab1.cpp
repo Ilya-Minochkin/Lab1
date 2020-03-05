@@ -8,6 +8,7 @@
 #define N 5
 #define MIN "min"
 #define MAX "max"
+#define MAXSTACK 2048
 using namespace std;
 
 float v[N][N];
@@ -157,9 +158,9 @@ void findMinOrMaxDiag(float m[N][N], string stance, string diag)
 
 }
 
-void findAverage(float f[N][N])
+float findAverage(float f[N][N])
 {
-	int i, j, count=0;
+	int i, j, count = 0;
 	float v = 0;
 	for (i = 0; i < N; i++)
 	{
@@ -169,37 +170,8 @@ void findAverage(float f[N][N])
 			count++;
 		}
 	}
-
 	cout << "Average :" << v / count << endl;
-
-}
-
-void findCloserToAverage(float f[N][N])
-{
-	int i, j, count = 0;
-	float difs[25];
-	float avg, dif = 0, v = 0;
-	for (i = 0; i < N; i++)
-	{
-		for (j = 0; j < N; j++)
-		{
-			v += f[i][j];
-			count++;
-		}
-	}
-	avg = v / count;
-	for (i = 0; i < N*N-1; i++)
-	{
-		difs[i] = avg - fabs(f[0][i]);
-	}
-	dif = difs[0];
-
-	for (i = 0; i < N*N - 1; i++)
-	{
-		if (dif > difs[i]) dif = difs[i];
-	}
-
-
+	return v / count;
 }
 
 void findSummRow(float f[N][N])
@@ -254,7 +226,7 @@ void findMinOrMaxRow(float f[N][N], string stance)
 		cout << stance << " of " << i + 1 << "str = " << v << endl;
 		v = f[i][j];
 	}
-		
+
 }
 
 void findMinOrMaxCol(float f[N][N], string stance)
@@ -287,12 +259,12 @@ void findMinOrMaxCol(float f[N][N], string stance)
 		{
 			if (stance == "min")
 			{
-			   if (v > f[j][i]) v = f[j][i];
-			//count++;
+				if (v > f[j][i]) v = f[j][i];
+				//count++;
 			}
-		else if (stance == "max")
+			else if (stance == "max")
 			{
-			if (v < f[j][i]) v = f[j][i];
+				if (v < f[j][i]) v = f[j][i];
 			}
 		}
 		cout << stance << " of " << i + 1 << "col = " << v << endl;
@@ -335,7 +307,7 @@ void findSumTriangleMatrix(float f[N][N])
 	float v = 0;
 	for (i = 0; i < N; i++)
 	{
-		for (j = 0; j < N; j++) 
+		for (j = 0; j < N; j++)
 		{
 			v += f[i][j];
 		}
@@ -344,7 +316,32 @@ void findSumTriangleMatrix(float f[N][N])
 	cout << "Sum of 2 triangle matrix is " << v * 2 << endl;
 }
 
-int main()
+float findCloserToAverage(float f[N][N])
+{
+	int k = 0, l = 0;
+	float avg = findAverage(f);
+	float diff = INFINITY;
+	for (int i = 0; i < N; i++)
+	{
+		for (int j = 0; j < N; j++)
+		{
+			if (abs(avg - f[i][j]) < diff)
+			{
+				diff = abs(avg - f[i][j]);
+				k = i;
+				l = j;
+			}
+		}
+	}
+	return f[k][l];
+}
+
+
+
+
+
+
+int mainLab1and2()
 {
 	//{
 	//
@@ -375,25 +372,6 @@ int main()
 	}
 	findMinOrMax(m, MIN);
 	//buildTriangleMatrix(m);
-	for (i = 0; i < N; i++)
-	{
-		for (j = 0; j < N; j++)
-		{
-			cout << setw(8) << setprecision(5) << m[i][j];
-		}
-		cout << endl;
-	}
-//	findMinOrMaxTriangle(v, MAX);
-
-
-	for (i = N - 1; i >= 0; i--)
-	{
-		for (j = N - 1; j >= 0; j--)
-		{
-			cout << setw(8) << setprecision(5) << m[i][j];
-		}
-		cout << endl;
-	}
 
 
 	findMinOrMaxDiag(m, MIN, "sub");
@@ -421,25 +399,313 @@ int main()
 	findAverageCol(m);
 	cout << endl;
 
+	cout << "Closer to average is " << findCloserToAverage(m)  << endl;
+
 
 
 	buildTriangleMatrix(m);
 	findSumTriangleMatrix(m);
-	//	findMinOrMaxTriangle(v, MAX);
+		findMinOrMaxTriangle(v, MAX);
 
-
-
-
-
-
-
-
-
-	
-
-
-
+		for (i = 0; i < N; i++)
+		{
+			for (j = 0; j < N; j++)
+			{
+				cout << setw(8) << setprecision(5) << m[i][j];
+			}
+			cout << endl;
+		}
+		cout << endl;
+		for (i = N - 1; i >= 0; i--)
+		{
+			for (j = N - 1; j >= 0; j--)
+			{
+				cout << setw(8) << setprecision(5) << m[i][j];
+			}
+			cout << endl;
+		}
+		return 0;
 	//getch();
+}
+
+
+void showArray(int arr[], int arraySize)
+{
+	//int buffArr[] = arr;
+	int n = arraySize;
+	for (int i = 0; i < n; i++)
+	{
+		cout << arr[i] << ' ';
+	}
+	cout << endl;
+}
+void sortBubble(int arr[], int arraySize)
+{
+	int i, j, x, n = arraySize;
+	for (i = 0; i < n; i++)
+	{
+		for (j = n - 1; j > i; j--)
+		{
+			x = arr[j - 1];
+			arr[j - 1] = arr[j];
+			arr[j] = x;
+		}
+	}
+}
+
+void minMaxSort(int arr[], int arraySize)
+{
+	int iMin, n = arraySize;
+	for (int i = 0; i < n; i++)
+	{
+		iMin = i;
+		for (int j = i + 1; j < n; j++)
+		{
+			if (arr[j] < arr[iMin]) iMin = j;
+		}
+		int t = arr[i];
+		arr[i] = arr[iMin];
+		arr[iMin] = t;
+	}
+}
+
+
+void quickSort(int arr[], int arraySize)
+{
+	int i, j;
+	int lb, ub;
+	int lbstack[MAXSTACK], ubstack[MAXSTACK];
+	int stackPos = 1;
+	int ppos;
+	int pivot;
+	int temp;
+	lbstack[1] = 0; ubstack[1] = arraySize - 1;
+	do {
+		lb = lbstack[stackPos]; 
+		ub = ubstack[stackPos];
+		stackPos--;
+		do {
+			ppos = (lb + ub) >> 1;
+			i = lb; j = ub; pivot = arr[ppos];
+			do {
+				while (arr[i] < pivot) i++;
+				while (pivot < arr[j]) j--;
+				if (i <= j)
+				{
+					temp = arr[i];
+					arr[i] = arr[j];
+					arr[j] = temp;
+					i++;
+					j--;
+				}
+			}
+			while (i <= j);
+			if (i < ppos)
+			{
+				if (i < ub)
+				{
+					stackPos++;
+					lbstack[stackPos] = i;
+					ubstack[stackPos] = ub;
+				}
+				ub = j;
+			}
+			else
+			{
+				if (j > lb) 
+				{
+					stackPos++;
+					lbstack[stackPos] = lb;
+					ubstack[stackPos] = j;
+				}
+				lb = i;
+			}
+		} while (lb < ub);
+	} while (stackPos != 0);
+}
+
+void quickSort(int arr[], int arraySize, int lowb, int upperb)
+{
+	int i, j;
+	int lb, ub;
+	int lbstack[MAXSTACK], ubstack[MAXSTACK];
+	int stackPos = 1;
+	int ppos;
+	int pivot;
+	int temp;
+	lbstack[1] = lowb; ubstack[1] = upperb - 1;
+	do {
+		lb = lbstack[stackPos];
+		ub = ubstack[stackPos];
+		stackPos--;
+		do {
+			ppos = (lb + ub) >> 1;
+			i = lb; j = ub; pivot = arr[ppos];
+			do {
+				while (arr[i] < pivot) i++;
+				while (pivot < arr[j]) j--;
+				if (i <= j)
+				{
+					temp = arr[i];
+					arr[i] = arr[j];
+					arr[j] = temp;
+					i++;
+					j--;
+				}
+			} while (i <= j);
+			if (i < ppos)
+			{
+				if (i < ub)
+				{
+					stackPos++;
+					lbstack[stackPos] = i;
+					ubstack[stackPos] = ub;
+				}
+				ub = j;
+			}
+			else
+			{
+				if (j > lb)
+				{
+					stackPos++;
+					lbstack[stackPos] = lb;
+					ubstack[stackPos] = j;
+				}
+				lb = i;
+			}
+		} while (lb < ub);
+	} while (stackPos != 0);
+}
+
+void quickSortDESC(int arr[], int arraySize, int lowb, int upperb)
+{
+	int i, j;
+	int lb, ub;
+	int lbstack[MAXSTACK], ubstack[MAXSTACK];
+	int stackPos = 1;
+	int ppos;
+	int pivot;
+	int temp;
+	lbstack[1] = lowb; ubstack[1] = upperb - 1;
+	do {
+		lb = lbstack[stackPos];
+		ub = ubstack[stackPos];
+		stackPos--;
+		do {
+			ppos = (lb + ub) >> 1;
+			i = lb; j = ub; pivot = arr[ppos];
+			do {
+				while (arr[i] > pivot) i++;
+				while (pivot > arr[j]) j--;
+				if (i <= j)
+				{
+					temp = arr[i];
+					arr[i] = arr[j];
+					arr[j] = temp;
+					i++;
+					j--;
+				}
+			} while (i <= j);
+			if (i < ppos)
+			{
+				if (i < ub)
+				{
+					stackPos++;
+					lbstack[stackPos] = i;
+					ubstack[stackPos] = ub;
+				}
+				ub = j;
+			}
+			else
+			{
+				if (j > lb)
+				{
+					stackPos++;
+					lbstack[stackPos] = lb;
+					ubstack[stackPos] = j;
+				}
+				lb = i;
+			}
+		} while (lb < ub);
+	} while (stackPos != 0);
+}
+void sortEvenUneven(int arr[], int arraySize)
+{
+	int i, j, count = 0, k = 0, temp, evenCount = 0, unevenCount = 0;
+	for (i = 0; i < arraySize; i++)
+	{
+		if (arr[i] % 2 == 0) evenCount++;
+		else unevenCount++;
+	}
+	
+	//cout << unevenCount << " - uneven Count" << endl;
+	//cout << evenCount << " - even Count " << endl;
+
+	for (i = 0; i < arraySize; i++)
+	{
+		if (arr[i] % 2 == 0)
+		{
+			temp = arr[count];
+			arr[count] = arr[i];
+			arr[i] = temp;
+			count++;
+		}
+	}
+
+	minMaxSort(arr, evenCount);
+
+	for (i = evenCount; i < arraySize; i++)
+	{
+		for (j = arraySize - 1; j > i; j--)
+		{
+			k = i;
+			for (int j = i + 1; j < arraySize; j++)
+			{
+				if (arr[j] > arr[k]) k = j;
+			}
+			int t = arr[i];
+			arr[i] = arr[k];
+			arr[k] = t;
+		}
+	}
+}
+
+
+
+
+int main()
+{
+	int arr[] = { 2, 5, -8, 1, -4, 6, 3, -5, -9, 13, 0, 4, 9 };
+	int iMin, iMax;
+	int n = sizeof(arr) / sizeof(int);
+	int i;
+	iMin = i = 0;
+	iMax = i = 0;
+	system("cls");
+
+	showArray(arr, n);
+	//for (i = 0; i < n; i++)
+	//{
+	//	iMin = i;
+	//	for (int j = i+1; j < n; j++)
+	//	{
+	//		if (arr[j] < arr[iMin]) iMin = j;
+	//	}
+	//	int t = arr[i];
+	//	arr[i] = arr[iMin];
+	//	arr[iMin] = t;
+	//}
+
+
+//	sortBubble(arr, n);
+//	quickSort(arr, n);
+
+//	sortEvenUneven(arr, n);
+//	quickSort(arr, n, 0, 7);
+	quickSortDESC(arr, n, 3, 7);
+	showArray(arr, n);
+
+
 }
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
