@@ -1,10 +1,12 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "pch.h"
 #include <iostream>
+//#include <alloc.h>
 #include <iomanip>
 #include <stdlib.h>
 #include <conio.h>
 #include <string>
+
 
 #define N 5
 #define MIN "min"
@@ -640,8 +642,6 @@ void sortEvenUneven(int arr[], int arraySize)
 		else unevenCount++;
 	}
 	
-	//cout << unevenCount << " - uneven Count" << endl;
-	//cout << evenCount << " - even Count " << endl;
 
 	for (i = 0; i < arraySize; i++)
 	{
@@ -686,40 +686,41 @@ int mainLab3()
 	system("cls");
 
 	showArray(arr, n);
-	//for (i = 0; i < n; i++)
-	//{
-	//	iMin = i;
-	//	for (int j = i+1; j < n; j++)
-	//	{
-	//		if (arr[j] < arr[iMin]) iMin = j;
-	//	}
-	//	int t = arr[i];
-	//	arr[i] = arr[iMin];
-	//	arr[iMin] = t;
-	//}
+	for (i = 0; i < n; i++)
+	{
+		iMin = i;
+		for (int j = i+1; j < n; j++)
+		{
+			if (arr[j] < arr[iMin]) iMin = j;
+		}
+		int t = arr[i];
+		arr[i] = arr[iMin];
+		arr[iMin] = t;
+	}
 
 
-//	sortBubble(arr, n);
-//	quickSort(arr, n);
+	sortBubble(arr, n);
+	quickSort(arr, n);
 
-//	sortEvenUneven(arr, n);
-//	quickSort(arr, n, 0, 7);
-	//quickSortDESC(arr, n, 3, 7);
-	//showArray(arr, n);
+	sortEvenUneven(arr, n);
+	quickSort(arr, n, 0, 7);
+	quickSortDESC(arr, n, 3, 7);
+	showArray(arr, n);
 	return 1;
 }
 
 
 int dlina1(char *c)
 {	
-	int count = 0;
+	int* count = (int*)malloc(sizeof(int));
+	*count = 0;
 	for (int i = 0; i < INFINITY; i++)
 	{
 		if (c[i] == '\0')
 			break;
-		count++;
+		*count = *count + 1;
 	}
-	return count;
+	return *count;
 }
 
 int dlina2(char *c)
@@ -731,8 +732,8 @@ int dlina2(char *c)
 
 int dlina3(char *c)
 {
-	char *e = c;
-	while (*e++);
+	char *e = (char*) malloc(sizeof(char));
+	while (*e > 0) *e = *e + 1;
 	return e-c-1;
 }
 
@@ -755,28 +756,83 @@ void concat(char *c1, char *c2)
 		c1[i] = c2[i];
 }
 
-int main()
+void defineCalloc(char* c1, char c2[])
+{
+	for (int i = 0; i < dlina1(c2); i++)
+	{
+		c1[i] = c2[i];
+	}
+}
+
+int main4()
 {
 	#pragma warning(disable: 4996)
-	char str1[] = "qwerty", str2[] = "1234567890";
-	cout << "strlen of str1 = " << strlen(str1) << endl;
+	char* s1 = (char*)calloc(20, sizeof(char));
+	char* s2 = (char*)calloc(20, sizeof(char));
+	char str1[] = "qwerty";
+	char str2[] = "1234567890";
+	char *sArr1[2] = { s1 , s2 };
+	defineCalloc(sArr1[0], str2);
+	defineCalloc(sArr1[1], str1);
 //	cout << "concat of str1 and str2 = " << strcat_s(str2, 100, str1) << endl;
 	try {
-		cout << dlina3(str1) << endl;
-		cout << str2 << endl;
-//		kopir(str2, str1);
-//		concat(str2, str1);
-		cout << str2 << endl;
+		cout << "dlina1 = " << dlina1(sArr1[0]) << endl;
+		cout << "dlina1 = " << dlina1(sArr1[1]) << endl;
+
+		kopir(sArr1[0], sArr1[1]);
+		concat(sArr1[0], sArr1[1]);
+		cout << "sArr0 = " << sArr1[0] << endl;
+		cout << "sArr1 = " << sArr1[1] << endl;
 	//	cout << "sizeof str1 = " << sizeof(str1) << endl;
 		//cout << "returned sizeof str1 = " << dlina2(str1) << endl;
-		//cout << "strcopy of str1 and str2 = " << strcpy(str2, str1) << endl;
-//	  	cout << "strcompare of str1 and str2 = " << strcmp(str1, str2) << endl;
-		cout << "strcompare of str1 and str2 = " << compare(str1, str2) << endl;
+		cout << "strcopy of str1 and str2 = " << strcpy(sArr1[0], sArr1[1]) << endl;
+		cout << "strcompare of str1 and str2 = " << compare(sArr1[0], sArr1[1]) << endl;
 	}
 	catch(exception) {
 		cout << "123";
 	}
+	free(s1);
+	free(s2);
+
+	return 1;
 }
+
+
+
+
+int main()
+{
+	char ch, name[50];
+	char text[100];
+	string s;
+	int i = 0;
+	FILE *in;
+	printf("Insert filename for open: ");
+	//scanf("%s", name);
+	if ((in = fopen("file.txt", "r")) == NULL)
+		printf("File %s is not open", name);
+	else 
+		while (!feof(in))
+		{
+			//Было
+			//ch = getc(in);
+			//putchar(ch);
+
+			//Стало
+			//ch = getc(in);
+			//text[i] = ch;
+//			cout << fscanf(in, "%c", text);
+			if (fscanf(in, "%s", s) > 0)
+				i++;
+//			putchar(getc(in));
+		}
+
+	cout << i;
+	return 0;
+}
+
+
+
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
 // Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
