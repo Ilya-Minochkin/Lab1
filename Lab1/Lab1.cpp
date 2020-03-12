@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "pch.h"
 #include <iostream>
+#include <io.h>
 //#include <alloc.h>
 #include <iomanip>
 #include <stdlib.h>
@@ -802,14 +803,15 @@ int main4()
 
 int main()
 {
-	char ch, name[50];
-	char text[100];
+	char ch, name[50] = {"file.txt"};
+	char *text = (char*) calloc(100, sizeof(char));
+	int count = 0;
 	string s;
 	int i = 0;
 	FILE *in;
 	printf("Insert filename for open: ");
 	//scanf("%s", name);
-	if ((in = fopen("file.txt", "r")) == NULL)
+	if ((in = fopen(name, "r")) == NULL)
 		printf("File %s is not open", name);
 	else 
 		while (!feof(in))
@@ -819,17 +821,20 @@ int main()
 			//putchar(ch);
 
 			//Стало
-			//ch = getc(in);
+			ch = getc(in);
+			cout << "ch " << ch << " isgraph = " << isgraph(ch) << endl;
+
+
 			//text[i] = ch;
 //			cout << fscanf(in, "%c", text);
-			if (fscanf(in, "%s", s) > 0)
-				i++;
 //			putchar(getc(in));
 		}
 
-	cout << i;
+	//cout << endl << (int) text[0] << endl <<  char (49);
 	return 0;
 }
+
+//' '   if(ch=='\32'||
 
 
 
