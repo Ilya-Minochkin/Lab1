@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <conio.h>
 #include <string>
+#include <fstream>
 
 
 #define N 5
@@ -799,39 +800,95 @@ int main4()
 }
 
 
+int inStr(char* sourceStr, char* searchStr)
+{
+	int i, j;
+	int srcLen, srchLen;
+	int count = 0;
 
+	for (srcLen = 0; sourceStr[srcLen]; srcLen++);
+	for (srchLen = 0; searchStr[srchLen]; srchLen++);
+
+	for (i = 0; i < srcLen; i++)
+	{
+		if (sourceStr[i] == searchStr[0])
+		{
+			for (j = 0; j < srchLen; j++)
+			{
+				if (sourceStr[i + j] == searchStr[j]) return i;
+			}
+		}
+	}
+	return -1;
+}
 
 int main()
 {
-	char ch, name[50] = {"file.txt"};
+	setlocale(LC_ALL, "Russian");
+	char ch, name[50] = {"test.txt"};
+	char newFileName[50] = { "dest.txt" };
 	char *text = (char*) calloc(100, sizeof(char));
-	int count = 0;
+	int countNoVis = 0, countVis = 0, numerator = 0;
+	long fSize;
+	char srchStr[10] = { "me" };
 	string s;
 	int i = 0;
-	FILE *in;
-	printf("Insert filename for open: ");
+	FILE *in, *out;
+
+
+	printf("Insert filename for open: \n");
 	//scanf("%s", name);
 	if ((in = fopen(name, "r")) == NULL)
 		printf("File %s is not open", name);
-	else 
-		while (!feof(in))
+	else
+	{
+		if ((out = fopen(newFileName, "w")) == NULL)
 		{
-			//Было
-			//ch = getc(in);
-			//putchar(ch);
-
-			//Стало
-			ch = getc(in);
-			cout << "ch " << ch << " isgraph = " << isgraph(ch) << endl;
-
-
-			//text[i] = ch;
-//			cout << fscanf(in, "%c", text);
-//			putchar(getc(in));
+			printf("File %s is not open", newFileName); 
+			return 0;
 		}
 
-	//cout << endl << (int) text[0] << endl <<  char (49);
-	return 0;
+		// fputs(str, out);
+		fseek(in, 0, SEEK_END);
+		fSize = ftell(in);
+		fseek(in, 0, SEEK_SET);
+		char* srcStr = (char*)calloc(fSize, sizeof(char));
+		for (i = 0; i < fSize; i++)
+		{
+			ch = getc(in);
+
+			if (ch == '\n' || ch == ' ' || ch == '\t' || ch == '\f' || ch == '\r')
+			{
+				countVis++;
+			}
+			else
+			{
+				countNoVis++;
+			}
+			srcStr[i] = ch;
+		}
+		fseek(in, 0, SEEK_SET);
+		while (!feof(in))
+		{
+			fgets(text, 100, in);
+			//cout << text << endl;
+			if (text[0] == '\f')
+			{
+				fputs( {"                "}, out);
+			}
+			else
+			{
+				fputs(text, out);
+			}
+		}
+
+
+
+		cout << countVis << " видимых символов, " << countNoVis << " невидимых символов" << endl;
+
+		//cout << "inStr of me is " << inStr(srcStr, srchStr) << endl;
+		return 0;
+	}
 }
 
 //' '   if(ch=='\32'||
