@@ -8,6 +8,8 @@
 #include <conio.h>
 #include <string>
 #include <fstream>
+#include <windows.h>
+#include <fcntl.h>
 
 
 #define N 5
@@ -822,13 +824,54 @@ int inStr(char* sourceStr, char* searchStr)
 	return -1;
 }
 
+int crypto(char* srcFileName, char* dstFileName)
+{
+	char key[100] = {"KEYqwz"};
+	char* text = (char*)calloc(100, sizeof(char));
+	FILE* in, *out = NULL;
+	int i, j = 0;
+	if ((in = fopen(srcFileName, "r")) == NULL)
+		printf("Can't open file %s", srcFileName);
+	else
+		if ((out = fopen(dstFileName, "w")) == NULL)
+		{
+			printf("Can't open file %s", dstFileName);
+			return -1;
+		}
+	while (!feof(in))
+	{
+		fgets(text, 100, in);
+		for (i = 0; i < strlen(text); i++)
+		{
+			j++;
+			if (j == strlen(key))
+			{
+				j = 0;
+			}
+			text[i] = text[i] ^ key[j];
+		}
+		fputs(text, out);
+	}
+	return 0;
+}
+
 int main()
 {
-	setlocale(LC_ALL, "Russian");
+	//SetConsoleOutputCP(1251);
+	//SetConsoleCP(1251);
+	//system("chcp 1251");
+	setlocale(LC_ALL, "");
+
+
 	char ch, name[50] = {"test.txt"};
 	char newFileName[50] = { "dest.txt" };
+	char encryptedFileName[50] = { "encr.txt" };
+	char decryptedFileName[50] = { "decr.txt" };
+	char key[100];
 	char *text = (char*) calloc(100, sizeof(char));
 	int countNoVis = 0, countVis = 0, numerator = 0;
+	char strNum[50] = { "                                 - %d -        " };
+	char resStr[50];
 	long fSize;
 	char srchStr[10] = { "me" };
 	string s;
@@ -857,7 +900,7 @@ int main()
 		{
 			ch = getc(in);
 
-			if (ch == '\n' || ch == ' ' || ch == '\t' || ch == '\f' || ch == '\r')
+			if (isgraph(ch) > 0)
 			{
 				countVis++;
 			}
@@ -874,19 +917,29 @@ int main()
 			//cout << text << endl;
 			if (text[0] == '\f')
 			{
-				fputs( {"                "}, out);
+				numerator++;
+				sprintf(resStr, strNum, numerator);
+				fputs(resStr, out);
+				fputs("\f", out);
+				fgets(text, 100, in);
 			}
 			else
 			{
 				fputs(text, out);
 			}
 		}
+		numerator++;
+		sprintf(resStr, strNum, numerator);
+		fputs(resStr, out);
 
 
+		cout << countVis << " visible characters " << countNoVis << " invisible characters" << endl;
 
-		cout << countVis << " видимых символов, " << countNoVis << " невидимых символов" << endl;
-
+		
 		//cout << "inStr of me is " << inStr(srcStr, srchStr) << endl;
+		crypto(encryptedFileName, decryptedFileName);
+//		decryptedFileName
+//encryptedFileName
 		return 0;
 	}
 }
